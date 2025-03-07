@@ -138,4 +138,9 @@ class QuizLocalStorage implements QuizStorage {
   Future<void> deleteProgress(User user, GameProgress progress) {
     throw UnimplementedError();
   }
+
+  @override
+  Future<void> deleteAchievement(User user, int index) {
+    throw UnimplementedError();
+  }
 }

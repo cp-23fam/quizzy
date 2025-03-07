@@ -8,10 +8,11 @@ import 'package:quiz_repository/quiz_repository.dart';
 import 'package:http/http.dart' as http;
 
 class QuizRemoteStorage implements QuizStorage {
-  // static const url = 'https://quizzy-6c7dc-default-rtdb.europe-west1.firebasedatabase.app/';
-  static const url = 'http://localhost:9000/';
-  // static const dbName = '';
-  static const dbName = '?ns=quizzy-6c7dc-default-rtdb';
+  static const url =
+      'https://quizzy-6c7dc-default-rtdb.europe-west1.firebasedatabase.app/';
+  // static const url = 'http://localhost:9000/';
+  static const dbName = '';
+  // static const dbName = '?ns=quizzy-6c7dc-default-rtdb';
 
   QuizRemoteStorage({@visibleForTesting http.Client? client})
       : _client = client ?? http.Client();
@@ -233,6 +234,20 @@ class QuizRemoteStorage implements QuizStorage {
       final parsedUrl = Uri.parse(
           '${url}utilisateurs/$userId/achievements/$index.json$dbName');
       final response = await _client.put(parsedUrl, body: jsonEncode(data));
+      if (response.statusCode / 100 != 2) {
+        throw HttpException('${response.statusCode}');
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<void> deleteAchievement(User user, int index) async {
+    try {
+      final parsedUrl = Uri.parse(
+          '${url}utilisateurs/${user.id}/achievements/$index.json$dbName');
+      final response = await _client.delete(parsedUrl);
       if (response.statusCode / 100 != 2) {
         throw HttpException('${response.statusCode}');
       }

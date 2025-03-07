@@ -104,6 +104,19 @@ class UserListProvider with ChangeNotifier {
     }
   }
 
+  Future<void> deleteAchievement(String userId, Achievement achievement) async {
+    User user = findUserById(userId);
+
+    final achievementIndex = user.achievement.indexOf(achievement);
+
+    await repository.deleteAchievement(user, achievementIndex);
+    _state.users
+        .firstWhere((u) => u.id == userId)
+        .achievement
+        .remove(achievement);
+    notifyListeners();
+  }
+
   void addLike({User? user, required String like}) async {
     final User finalUser = user ?? _userState.user;
     try {

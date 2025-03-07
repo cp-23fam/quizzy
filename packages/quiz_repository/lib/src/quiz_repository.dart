@@ -78,6 +78,14 @@ class QuizRepository {
     }
   }
 
+  Future<void> deleteAchievement(User user, int index) async {
+    try {
+      return await storage.deleteAchievement(user, index);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   Future<void> addLike(User user, String like, int index) async {
     try {
       await storage.addLike(user, like, index);

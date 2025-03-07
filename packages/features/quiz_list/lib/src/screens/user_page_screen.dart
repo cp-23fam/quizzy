@@ -29,6 +29,22 @@ class _UserPageScreenState extends State<UserPageScreen> {
 
   @override
   Widget build(BuildContext context) {
+    void resetProgression(BuildContext context, user) {
+      for (Achievement achievement in user.achievement) {
+        context
+            .read<UserListProvider>()
+            .deleteAchievement(user.id as String, achievement);
+      }
+    }
+
+    void resetProgress(BuildContext context, User user) {
+      for (GameProgress progress in user.gameProgress) {
+        context
+            .read<UserListProvider>()
+            .deleteProgress(user.id as String, progress);
+      }
+    }
+
     final user = context.watch<UserListProvider>().userState.user;
     final quizzes =
         context.watch<QuizListProvider>().findQuizzesByAuthor(user.username);
@@ -57,28 +73,96 @@ class _UserPageScreenState extends State<UserPageScreen> {
               height: 17,
             ),
             Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                CircleAvatar(
-                  backgroundColor: Colors.grey,
-                  radius: 50.0,
-                ),
-                SizedBox(
-                  width: 20,
-                ),
-                Column(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                Row(
                   children: [
-                    Text(
-                      user.username,
-                      style: TextStyle(color: Colors.white, fontSize: 30.0),
+                    CircleAvatar(
+                      backgroundColor: Colors.grey,
+                      radius: 50.0,
                     ),
-                    Text(
-                        '${user.achievement.length} quiz joués | $pointsTot étoiles gagnées',
-                        style: TextStyle(color: Colors.white, fontSize: 17.0))
+                    SizedBox(
+                      width: 20,
+                    ),
+                    Column(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          user.username,
+                          style: TextStyle(color: Colors.white, fontSize: 30.0),
+                        ),
+                        Text(
+                            '${user.achievement.length} quiz joués | $pointsTot étoiles gagnées',
+                            style:
+                                TextStyle(color: Colors.white, fontSize: 17.0))
+                      ],
+                    ),
                   ],
-                )
+                ),
+              ],
+            ),
+            Divider(),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                TextButton(
+                  style: ButtonStyle(
+                    backgroundColor: WidgetStatePropertyAll(Colors.white),
+                    foregroundColor: WidgetStatePropertyAll(Colors.black),
+                    shape: WidgetStatePropertyAll<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        Icons.delete_forever,
+                        color: Colors.red,
+                      ),
+                      SizedBox(height: 5.0),
+                      Text(
+                        'Réinitialiser les récompenses',
+                        style: TextStyle(fontSize: 10),
+                      ),
+                    ],
+                  ),
+                  onPressed: () {
+                    resetProgression(context, user);
+                  },
+                ),
+                TextButton(
+                  style: ButtonStyle(
+                    backgroundColor: WidgetStatePropertyAll(Colors.white),
+                    foregroundColor: WidgetStatePropertyAll(Colors.black),
+                    shape: WidgetStatePropertyAll<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        Icons.delete_forever,
+                        color: Colors.red,
+                      ),
+                      SizedBox(height: 5.0),
+                      Text(
+                        'Réinitialiser les quiz en cours',
+                        style: TextStyle(fontSize: 10),
+                      ),
+                    ],
+                  ),
+                  onPressed: () {
+                    resetProgress(context, user);
+                  },
+                ),
               ],
             ),
             Divider(),
